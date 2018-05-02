@@ -1,0 +1,46 @@
+In this work was done research about feature selection and some pretty interesting statements were proved.
+
+This is main text of this work. All results will be interpreted here (with referrals to code, of course).
+
+Referrals would be done by specifying section of code cell number and probably line number (e.g. “Feature selection->DFS:2:154”).
+
+Referrals to plots would be done by their name. Plots are dynamic so for stable work we exported them into *.html file located in root of repository. 
+
+Data description
+To do this work we took data with 1105 samples and 1524 features. Which is obviously terrible ratio of samples to features.
+
+
+In this work our goal was to prove or to refute usefulness of DFS (Deep Feature Selection) algorithm using our data. So firstly we’ve implemented DFS in (“Feature Selection->DFS:1”). Because of that fact that our data is much more sparse thad model data from paper (1105 samples & 1524 features VS ~8k samples & ~90 features) we had some problems with DFS overfitting. Even dropout rate equal to 0.1 wasn’t enough to regularise DFS. So before training DFS we filtered features by dropping out highly correlated ones.
+Constant features were dropped out too. It was done in `drop_correllated_ftrs` function (“Common functions:1:37). By this operation we left 225 features. Which is still huge amount for ~1k samples.
+
+Also because of sparse data we've used more shallow network topology  {64->64->32->2} than in original paper.
+After that we optimised some hyper parameters of DFS(lambda1, alpha1) by using straightforward grid search. (“Feature Selection->DFS:2”).
+
+As main opponent to DFS we chose Logistic regression with l1 regularisation (hereinafter referred to as “Lasso”). Lasso feature selection implemented in (“Feature selection -> Lasso:1”) and hyper parameters optimised in (“Feature selection -> Lasso:2”). Because of tiny class imbalance in our data as main metric we chose usual classification accuracy score.
+
+First of all we trained both methods on cross-validation and compared their accuracy scores. By comparing mean and std of accuracy distribution we can be sure that DFS performs better. (“Plotting:3”). But that result is pretty obvious because DFS model is much more expressive than Lasso. However, by comparing prediction accuracies we can’t state that DFS is better for feature selection task, we can only state that it is better for classification task.
+
+As the beginning we have to show that some algorithm performs better with DFS than without. We did it with MLP. Results can be seen on plot `accuracy_plot`. (THE PLOT IS DYNAMIC. SO YOU CAN TAP ON LEGEND TO TURN ON/OFF SOME CURVES).
+ On this plot we see that with feature number increasing MLP+DFS outperforms pure MLP. It was proved with Wilcoxon two-sided test in (“Plotting:5”). (P-value threshold=0.1 was used.)
+
+To compare performances of both methods in feature selection task we decided to take 3 classification methods (Random forest, Gradient boosting and MLP) and compare their performance with each method. It was done in “Hyperparameters optimisation” section. For each combination of methods we calculated dependency of accuracy on amount of features that was selected by DFS/Lasso. This dependencies represented in `accuracy_plot`
+. Here we can see that features selected by DFS performs much better on MLP than features selected by Lasso. To prove it we used Wilcoxon two-sided test (“Plotting:6”).  For all other classification models we can’t state same result. It probably happens because of that DFS, generally speaking, is usual MLP with weighted layer before input. By selecting features with DFS we make some assumptions about classification model. 
+From this part we can conclude that DFS performs much better than Lasso if further we using MLP model.
+
+As we know feature selection frequently used not only for accuracy tuning but also for decreasing execution time of model. We built bar plot `fit_time_plot` which indicating fit time for each model combination. From it we can see that DFS requires much more time than Lasso.
+
+
+Main results&ideas:
+
+DFS performs significantly better than Lasso if further we use neural network.
+MLP performs better with features selected by DFS then with original features.
+DFS is computationally expensive.
+
+
+
+
+
+
+
+
+
