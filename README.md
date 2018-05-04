@@ -1,10 +1,12 @@
 # Deep Feature Selection (DFS) exploration
 
-Exploring DFS (Deep feature selection) as test task @ Insilico
-
 In this work was done research about feature selection.
 
 Our goal was to prove or to refute usefulness of DFS using our data.
+
+DFS implemented as it described in https://pdfs.semanticscholar.org/ac2a/c075773cc936a206c3ebb2339376d586bcbd.pdf
+
+Work was done as test task @ Insilico
 
 ## Technologies :
 * **Language** : Python3.6
